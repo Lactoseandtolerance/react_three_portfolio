@@ -152,24 +152,50 @@ const Earth = ({ setHoveredSection }) => {
   // Atlanta: 33.7490° N, 84.3880° W
   // Nairobi: 1.2921° S, 36.8219° E
   // Tokyo: 35.6762° N, 139.6503° E
+  // Rio de Janeiro: 22.9068° S, 43.1729° W (GitHub)
+  // Singapore: 1.3521° N, 103.8198° E (LinkedIn)
   const navigationPoints = [
     { 
       section: 'about', 
       label: 'About', 
       position: latLongToVector3(33.7490, -84.3880, 1.5),  // Atlanta
-      rotation: [0, 0, 0]
+      rotation: [0, 0, 0],
+      color: "#d4af37",
+      type: 'internal'
     },
     { 
       section: 'projects', 
       label: 'Projects', 
       position: latLongToVector3(-1.2921, 36.8219, 1.5),  // Nairobi
-      rotation: [0, 0, 0]
+      rotation: [0, 0, 0],
+      color: "#d4af37",
+      type: 'internal'
     },
     { 
       section: 'contact', 
       label: 'Contact', 
       position: latLongToVector3(35.6762, 139.6503, 1.5),  // Tokyo
-      rotation: [0, 0, 0]
+      rotation: [0, 0, 0],
+      color: "#d4af37",
+      type: 'internal'
+    },
+    { 
+      section: 'github', 
+      label: 'GitHub', 
+      position: latLongToVector3(-22.9068, -43.1729, 1.5),  // Rio de Janeiro
+      rotation: [0, 0, 0],
+      color: "#2464eb", // GitHub blue
+      url: "https://github.com/Lactoseandtolerance",
+      type: 'external'
+    },
+    { 
+      section: 'linkedin', 
+      label: 'LinkedIn', 
+      position: latLongToVector3(1.3521, 103.8198, 1.5),  // Singapore
+      rotation: [0, 0, 0],
+      color: "#0077b5", // LinkedIn blue
+      url: "https://www.linkedin.com/in/angel-nivar-a00740275/",
+      type: 'external'
     }
   ];
   
@@ -250,6 +276,15 @@ const Earth = ({ setHoveredSection }) => {
     
     return () => clearTimeout(timeout);
   }, []);
+
+  // Handle external link navigation
+  const handleNavigation = (point) => {
+    if (point.type === 'external' && point.url) {
+      window.open(point.url, '_blank');
+    } else {
+      navigate(`/${point.section}`);
+    }
+  };
   
   return (
     <>
@@ -313,12 +348,12 @@ const Earth = ({ setHoveredSection }) => {
             <mesh
               onPointerOver={() => setHoveredSection(point.section)}
               onPointerOut={() => setHoveredSection(null)}
-              onClick={() => navigate(`/${point.section}`)}
+              onClick={() => handleNavigation(point)}
             >
               <sphereGeometry args={[0.15, 16, 16]} />
               <meshStandardMaterial
-                color="#d4af37"
-                emissive="#d4af37"
+                color={point.color}
+                emissive={point.color}
                 emissiveIntensity={0.5}
               />
             </mesh>
@@ -329,7 +364,7 @@ const Earth = ({ setHoveredSection }) => {
               center
               distanceFactor={1.5}
               style={{
-                color: '#ffd700', /* Bright gold */
+                color: point.color, /* Match the sphere color */
                 fontWeight: 'bold',
                 fontSize: '42px', /* Dramatically increased from 32px to 42px */
                 userSelect: 'none',
