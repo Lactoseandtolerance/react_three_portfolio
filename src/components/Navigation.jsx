@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
 import { OrbitControls, Sphere, Stars, Html, Cloud } from '@react-three/drei';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import * as THREE from 'three';
 import styled from 'styled-components';
 
@@ -235,7 +235,20 @@ const DropdownContent = styled.div`
   z-index: 25;
 `;
 
-const DropdownItem = styled.a`
+const DropdownItem = styled(Link)`
+  display: block;
+  padding: 12px 15px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(212, 175, 55, 0.3);
+    color: #d4af37;
+  }
+`;
+
+const ExternalDropdownItem = styled.a`
   display: block;
   padding: 12px 15px;
   color: #fff;
@@ -590,12 +603,12 @@ const Navigation = () => {
           </svg>
         </DropdownButton>
         <DropdownContent isOpen={dropdownOpen}>
-          <DropdownItem href="/">Home</DropdownItem>
-          <DropdownItem href="/about">About</DropdownItem>
-          <DropdownItem href="/projects">Projects</DropdownItem>
-          <DropdownItem href="/contact">Contact</DropdownItem>
-          <DropdownItem href="https://github.com/Lactoseandtolerance" target="_blank">GitHub</DropdownItem>
-          <DropdownItem href="https://www.linkedin.com/in/angel-nivar-a00740275/" target="_blank">LinkedIn</DropdownItem>
+          <DropdownItem to="/">Home</DropdownItem>
+          <DropdownItem to="/about">About</DropdownItem>
+          <DropdownItem to="/projects">Projects</DropdownItem>
+          <DropdownItem to="/contact">Contact</DropdownItem>
+          <ExternalDropdownItem href="https://github.com/Lactoseandtolerance" target="_blank" rel="noopener noreferrer">GitHub</ExternalDropdownItem>
+          <ExternalDropdownItem href="https://www.linkedin.com/in/angel-nivar-a00740275/" target="_blank" rel="noopener noreferrer">LinkedIn</ExternalDropdownItem>
         </DropdownContent>
       </SimpleNavDropdown>
       
