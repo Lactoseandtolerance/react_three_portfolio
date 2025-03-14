@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useContactFormStore } from '../stores/contactFormStore';
 import styled from 'styled-components';
 
 const ContactSection = styled.section`
@@ -147,41 +148,107 @@ const SuccessMessage = styled.div`
   }
 `;
 
+const SavedMessage = styled.div`
+  background: rgba(128, 128, 128, 0.2);
+  color: #d4d4d4;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+`;
+
+const ErrorMessage = styled.div`
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: bold;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const SecondaryButton = styled.button`
+  padding: 1rem 1.5rem;
+  background: transparent;
+  color: #d4d4d4;
+  border: 1px solid #d4d4d4;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #333;
+  }
+`;
+
+const SaveButton = styled.button`
+  padding: 1rem 1.5rem;
+  background: #2a2a2a;
+  color: #d4d4d4;
+  border: 1px solid #444;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #3a3a3a;
+  }
+`;
+
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const { 
+    formData, 
+    updateField, 
+    submitForm, 
+    resetForm, 
+    isDirty,
+    isSubmitting,
+    submitSuccess,
+    submitError,
+    lastSaved,
+    saveForm
+  } = useContactFormStore();
   
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  // Auto-save form when component unmounts
+  useEffect(() => {
+    return () => {
+      if (isDirty) {
+        saveForm();
+      }
+    };
+  }, [isDirty, saveForm]);
   
-  // Handle input changes
+  // Periodically auto-save if form is dirty (every 30 seconds)
+  useEffect(() => {
+    let interval;
+    if (isDirty) {
+      interval = setInterval(() => {
+        saveForm();
+      }, 30000);
+    }
+    return () => clearInterval(interval);
+  }, [isDirty, saveForm]);
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    updateField(name, value);
   };
   
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Here you would typically send the data to your backend
-    // For now, we'll just show a success message
-    setFormSubmitted(true);
-    setFormData({
-      name: '',
-      email: '',
-      message: ''
-    });
-    
-    // Reset the success message after 5 seconds
-    setTimeout(() => {
-      setFormSubmitted(false);
-    }, 5000);
+    submitForm();
   };
   
   return (
@@ -194,10 +261,22 @@ const Contact = () => {
           <a href="mailto:anivar.fw@gmail.com">anivar.fw@gmail.com</a>.
         </ContactInfo>
         
-        {formSubmitted && (
+        {lastSaved && (
+          <SavedMessage>
+            Draft saved at {lastSaved.toLocaleTimeString()}
+          </SavedMessage>
+        )}
+        
+        {submitSuccess && (
           <SuccessMessage>
             Thanks for reaching out! I'll get back to you soon.
           </SuccessMessage>
+        )}
+        
+        {submitError && (
+          <ErrorMessage>
+            {submitError}
+          </ErrorMessage>
         )}
         
         <Form onSubmit={handleSubmit}>
@@ -239,7 +318,23 @@ const Contact = () => {
             />
           </FormGroup>
           
-          <SubmitButton type="submit">Send Message</SubmitButton>
+          <ButtonGroup>
+            <SubmitButton type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Sending...' : 'Send Message'}
+            </SubmitButton>
+            
+            {isDirty && (
+              <SecondaryButton type="button" onClick={resetForm}>
+                Clear Form
+              </SecondaryButton>
+            )}
+            
+            {isDirty && (
+              <SaveButton type="button" onClick={saveForm}>
+                Save Draft
+              </SaveButton>
+            )}
+          </ButtonGroup>
         </Form>
       </Container>
     </ContactSection>
