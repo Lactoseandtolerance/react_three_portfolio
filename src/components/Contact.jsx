@@ -10,7 +10,7 @@ const ContactSection = styled.section`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: rgba(12, 12, 12, 0.3); // Changed from solid to semi-transparent
+  background-color: #0c0c0c;
 `;
 
 const Container = styled.div`
@@ -23,6 +23,8 @@ const Container = styled.div`
   position: relative;
   z-index: 1;
   backdrop-filter: blur(10px);
+  max-height: 80vh; /* Fixed height */
+  overflow-y: auto; /* Enable scrolling */
   
   @media (max-width: 768px) {
     padding: 2rem;
@@ -111,6 +113,16 @@ const Textarea = styled.textarea`
   }
 `;
 
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
 const SubmitButton = styled.button`
   padding: 1rem 2rem;
   background: #d4af37;
@@ -130,50 +142,11 @@ const SubmitButton = styled.button`
   &:active {
     transform: translateY(1px);
   }
-`;
-
-const SuccessMessage = styled.div`
-  background: rgba(40, 167, 69, 0.9);
-  color: white;
-  padding: 1rem;
-  border-radius: 5px;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  font-weight: bold;
-  animation: fadeIn 0.5s ease;
   
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-`;
-
-const SavedMessage = styled.div`
-  background: rgba(128, 128, 128, 0.2);
-  color: #d4d4d4;
-  padding: 0.5rem;
-  border-radius: 5px;
-  margin-bottom: 1rem;
-  text-align: center;
-  font-size: 0.9rem;
-`;
-
-const ErrorMessage = styled.div`
-  background: rgba(220, 53, 69, 0.9);
-  color: white;
-  padding: 1rem;
-  border-radius: 5px;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  font-weight: bold;
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 1rem;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
+  &:disabled {
+    background: #7d6b2e;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
@@ -192,18 +165,56 @@ const SecondaryButton = styled.button`
   }
 `;
 
-const SaveButton = styled.button`
-  padding: 1rem 1.5rem;
-  background: #2a2a2a;
+const SavedMessage = styled.div`
+  background: rgba(128, 128, 128, 0.2);
   color: #d4d4d4;
-  border: 1px solid #444;
+  padding: 0.5rem;
   border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SuccessMessage = styled.div`
+  background: rgba(40, 167, 69, 0.9);
+  color: white;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: bold;
+  animation: fadeIn 0.5s ease;
   
-  &:hover {
-    background: #3a3a3a;
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`;
+
+const ErrorMessage = styled.div`
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: bold;
+`;
+
+const StorageInfo = styled.div`
+  background: rgba(13, 110, 253, 0.1);
+  border: 1px solid rgba(13, 110, 253, 0.2);
+  color: #a0c0ff;
+  padding: 0.75rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  
+  strong {
+    color: #d4af37;
   }
 `;
 
@@ -221,16 +232,22 @@ const Contact = () => {
     saveForm
   } = useContactFormStore();
   
-  // Auto-save form when component unmounts
-  useEffect(() => {
-    return () => {
-      if (isDirty) {
-        saveForm();
-      }
-    };
-  }, [isDirty, saveForm]);
+  // Format the lastSaved date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return null;
+    
+    const date = new Date(dateString);
+    return date.toLocaleString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
   
-  // Periodically auto-save if form is dirty (every 30 seconds)
+  const formattedLastSaved = lastSaved ? formatDate(lastSaved) : null;
+  
+  // Auto-save every 30 seconds if form is dirty
   useEffect(() => {
     let interval;
     if (isDirty) {
@@ -238,14 +255,17 @@ const Contact = () => {
         saveForm();
       }, 30000);
     }
+    
     return () => clearInterval(interval);
   }, [isDirty, saveForm]);
   
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     updateField(name, value);
   };
   
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     submitForm();
@@ -261,9 +281,22 @@ const Contact = () => {
           <a href="mailto:anivar.fw@gmail.com">anivar.fw@gmail.com</a>.
         </ContactInfo>
         
-        {lastSaved && (
+        {formData.name && isDirty && (
+          <StorageInfo>
+            <strong>Your form data is being saved locally.</strong> If you leave this page and come back later, your draft will still be here.
+          </StorageInfo>
+        )}
+        
+        {formattedLastSaved && (
           <SavedMessage>
-            Draft saved at {lastSaved.toLocaleTimeString()}
+            <span>Last saved: {formattedLastSaved}</span>
+            <SecondaryButton 
+              type="button" 
+              onClick={resetForm}
+              style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}
+            >
+              Clear Saved Data
+            </SecondaryButton>
           </SavedMessage>
         )}
         
@@ -324,15 +357,15 @@ const Contact = () => {
             </SubmitButton>
             
             {isDirty && (
-              <SecondaryButton type="button" onClick={resetForm}>
-                Clear Form
+              <SecondaryButton type="button" onClick={saveForm}>
+                Save Draft
               </SecondaryButton>
             )}
             
             {isDirty && (
-              <SaveButton type="button" onClick={saveForm}>
-                Save Draft
-              </SaveButton>
+              <SecondaryButton type="button" onClick={resetForm}>
+                Clear Form
+              </SecondaryButton>
             )}
           </ButtonGroup>
         </Form>
