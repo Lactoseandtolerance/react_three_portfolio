@@ -1,6 +1,6 @@
 # react_three_portfolio
 Angel Nivar's Portfolio
-(files on master branch)
+(files in master branch)
 visit site at [angelnivar.com](https://angelnivar.com/)
 
 A modern React-based portfolio website featuring 3D navigation, interactive components, and state management.
