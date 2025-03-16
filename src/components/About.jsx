@@ -3,10 +3,26 @@ import styled, { keyframes } from 'styled-components';
 
 // Main section with scroll enabled
 const AboutSection = styled.section`
-  min-height: 100vh;
-  padding: 80px 20px;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
-  background-color: rgba(12, 12, 12, 0.3); // Changed from solid to semi-transparent
+  background-color: #0c0c0c;
+  scrollbar-width: thin;
+  scrollbar-color: #333 #0c0c0c;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #0c0c0c;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 6px;
+  }
 `;
 
 const Container = styled.div`
@@ -127,8 +143,8 @@ const SectionDivider = styled.div`
   background: linear-gradient(to right, transparent, #333, transparent);
 `;
 
-// Fashion grid with improved randomization
-const FashionGrid = styled.div`
+// Common grid layout for Fashion and Decor items
+const ItemsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-auto-rows: minmax(250px, auto);
@@ -146,7 +162,7 @@ const randomFloatAnimation = (min, max) => keyframes`
   100% { transform: translateY(${min}px) scale(1); }
 `;
 
-const FashionBox = styled.div`
+const ItemBox = styled.div`
   position: relative;
   height: ${props => props.height || '350px'};
   overflow: hidden;
@@ -177,7 +193,7 @@ const FashionBox = styled.div`
   }
 `;
 
-const SlideImage = styled.div`
+const ItemImage = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -185,90 +201,12 @@ const SlideImage = styled.div`
   height: 100%;
   background-size: cover;
   background-position: center;
-  transition: opacity 1.5s ease-in-out;
-  opacity: 0;
-  
-  &.active {
-    opacity: 1;
-  }
+  transition: opacity 1.2s ease-in-out;
+  opacity: ${props => props.active ? '1' : '0'};
 `;
 
-// New interactive polaroid gallery
-const GallerySection = styled.div`
-  position: relative;
-  margin: 5rem 0;
-  padding: 2rem 0;
-  text-align: center;
-`;
-
-const GalleryTitle = styled.h3`
-  font-size: 2rem;
-  color: #d4af37;
-  margin-bottom: 1.5rem;
-  text-align: center;
-`;
-
-const PolaroidGallery = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 25px;
-  perspective: 1000px;
-`;
-
-const rotatePolaroid = keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`;
-
-const Polaroid = styled.div`
-  width: 220px;
-  height: 260px;
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  padding: 15px 15px 40px 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: ${props => `rotate(${props.rotation}deg)`};
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  cursor: pointer;
-  position: relative;
-  z-index: 1;
-  
-  &:hover {
-    transform: translateY(-15px) rotate(0deg) scale(1.1);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.3);
-    z-index: 10;
-  }
-  
-  &.active {
-    transform: scale(1.6) rotateY(0deg) !important;
-    z-index: 20;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(212, 175, 55, 0.4);
-  }
-`;
-
-const PolaroidImage = styled.div`
-  width: 100%;
-  height: 180px;
-  background-color: #222;
-  background-image: ${props => `url(${props.src})`};
-  background-size: cover;
-  background-position: center;
-  margin-bottom: 10px;
-`;
-
-const PolaroidCaption = styled.p`
-  font-family: 'Permanent Marker', cursive, sans-serif;
-  color: #333;
-  font-size: 0.9rem;
-  text-align: center;
-  transform: rotate(-2deg);
-`;
-
-const PolaroidOverlay = styled.div`
+// Overlay when an image is clicked to enlarge
+const ImageOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -280,9 +218,45 @@ const PolaroidOverlay = styled.div`
   cursor: pointer;
 `;
 
+// Individual image component with state-based transitions
+const SlidingImages = ({ images, boxIndex, imageType }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  
+  useEffect(() => {
+    // Calculate a different delay for each box
+    const baseDelay = 4000; // Longer base delay (4 seconds)
+    const randomOffset = Math.floor(Math.random() * 2000); // Random offset between 0-2000ms
+    const delay = baseDelay + (boxIndex * 800) + randomOffset; // 4-8.2s with randomization
+    
+    // Set up the interval for changing images
+    const interval = setInterval(() => {
+      setActiveIndex(prev => (prev + 1) % images.length);
+    }, delay);
+    
+    // Clean up the interval
+    return () => clearInterval(interval);
+  }, [boxIndex, images.length]);
+  
+  return (
+    <>
+      {images.map((image, imageIndex) => (
+        <ItemImage
+          key={imageIndex}
+          active={imageIndex === activeIndex}
+          style={{ backgroundImage: `url(/images/${image})` }}
+        />
+      ))}
+    </>
+  );
+};
+
 const About = () => {
   // States
-  const [activePolaroid, setActivePolaroid] = useState(null);
+  const [activeImage, setActiveImage] = useState(null);
+  
+  // Refs for parallax
+  const fashionBoxesRef = useRef([]);
+  const decorBoxesRef = useRef([]);
   
   // Skills list with grouping by category
   const skills = [
@@ -324,54 +298,71 @@ const About = () => {
     return colors[category] || '#d4af37'; // Gold default
   };
   
-  // Improved fashion images slideshow
+  // Enhanced parallax scrolling effect
   useEffect(() => {
-    const fashionBoxes = document.querySelectorAll('.fashion-box');
-    const intervals = [];
-    
-    fashionBoxes.forEach((box, boxIndex) => {
-      const slides = box.querySelectorAll('.slide-image');
-      if (slides.length < 2) return;
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
       
-      // Initialize first slide
-      slides[0].classList.add('active');
-      
-      // Set different transition delays for each box to create staggered effect
-      const delay = 3000 + (boxIndex * 1500); // More random timing (3-9s)
-      
-      const slideInterval = setInterval(() => {
-        // Find current active slide
-        let currentIndex = 0;
-        slides.forEach((slide, i) => {
-          if (slide.classList.contains('active')) {
-            currentIndex = i;
-            slide.classList.remove('active');
-          }
-        });
+      // Apply parallax to fashion boxes
+      fashionBoxesRef.current.forEach((box, index) => {
+        if (!box) return;
         
-        // Activate next slide
-        const nextIndex = (currentIndex + 1) % slides.length;
-        slides[nextIndex].classList.add('active');
-      }, delay);
+        const rect = box.getBoundingClientRect();
+        
+        // Only apply effect when box is in viewport
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          // Different speeds based on box position
+          const speed = 0.15 + (index * 0.03);
+          const yPos = (scrollY - box.offsetTop) * speed;
+          
+          // Apply the transform with a subtle movement
+          box.style.transform = `translateY(${yPos}px)`;
+          
+          // Add depth perception by scaling slightly
+          const scale = 1 + (yPos * 0.0005);
+          box.style.transform += ` scale(${scale})`;
+        }
+      });
       
-      intervals.push(slideInterval);
-    });
+      // Apply parallax to decor boxes
+      decorBoxesRef.current.forEach((box, index) => {
+        if (!box) return;
+        
+        const rect = box.getBoundingClientRect();
+        
+        // Only apply effect when box is in viewport
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          // Different speeds based on box position (reverse direction from fashion)
+          const speed = 0.12 + (index * 0.02);
+          const yPos = (scrollY - box.offsetTop) * speed * -1; // Reverse direction
+          
+          // Apply the transform with a subtle movement
+          box.style.transform = `translateY(${yPos}px)`;
+          
+          // Add depth perception by scaling slightly
+          const scale = 1 + (Math.abs(yPos) * 0.0003);
+          box.style.transform += ` scale(${scale})`;
+        }
+      });
+    };
     
-    // Cleanup intervals on component unmount
-    return () => intervals.forEach(interval => clearInterval(interval));
+    // Add scroll event listener
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
-  // Close polaroid when clicking outside
+  // Close enlarged image when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (activePolaroid !== null && e.target.classList.contains('overlay')) {
-        setActivePolaroid(null);
+      if (activeImage !== null && e.target.classList.contains('overlay')) {
+        setActiveImage(null);
       }
     };
     
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
-  }, [activePolaroid]);
+  }, [activeImage]);
   
   // Fashion images data with randomized properties
   const fashionImages = [
@@ -403,7 +394,7 @@ const About = () => {
       animationDelay: '0.7s'
     },
     {
-      images: ['Fashion7.jpg', 'Fashion1.jpg', 'Fashion2.jpg', 'Fashion3.jpg'],
+      images: ['Fashion7.jpg', 'Fashion3.jpg', 'Fashion1.jpg', 'Fashion2.jpg'],
       height: '300px',
       mobileHeight: '220px',
       minFloat: -4,
@@ -413,29 +404,52 @@ const About = () => {
     }
   ];
   
-  // Gallery images - these would be your actual home decor images
-  const galleryImages = [
-    { src: "/images/cool1.jpg", caption: "unconvential coffee makers" },
-    { src: "/images/cool2.jpg", caption: "faux-organic furniture" },
-    { src: "/images/cool3.jpg", caption: "raw wood foundations" },
-    { src: "/images/cool4.jpg", caption: "rounded spaces" },
-    { src: "/images/cool5.jpg", caption: "eccentric pots" },
-    { src: "/images/cool6.jpg", caption: "inviting workspaces" },
-    { src: "/images/cool7.jpg", caption: "vegitation in werid places" },
-    { src: "/images/cool8.jpg", caption: "ergonomic room layouts" }
+  // Decor images data with randomized properties (different from fashion)
+  const decorImages = [
+    {
+      images: ['cool1.jpg', 'cool5.jpg', 'cool3.jpg', 'cool8.jpg'],
+      height: '370px',
+      mobileHeight: '250px',
+      minFloat: -6,
+      maxFloat: 4,
+      animationDuration: '10.5s',
+      animationDelay: '0.2s'
+    },
+    {
+      images: ['cool2.jpg', 'cool6.jpg', 'cool4.jpg', 'cool7.jpg'],
+      height: '330px',
+      mobileHeight: '230px',
+      minFloat: -3,
+      maxFloat: 9,
+      animationDuration: '9.5s',
+      animationDelay: '0.5s'
+    },
+    {
+      images: ['cool3.jpg', 'cool7.jpg', 'cool1.jpg', 'cool5.jpg'],
+      height: '350px',
+      mobileHeight: '240px',
+      minFloat: -10,
+      maxFloat: -3,
+      animationDuration: '11.5s',
+      animationDelay: '0.8s'
+    },
+    {
+      images: ['cool4.jpg', 'cool8.jpg', 'cool2.jpg', 'cool6.jpg'],
+      height: '310px',
+      mobileHeight: '220px',
+      minFloat: -5,
+      maxFloat: 8,
+      animationDuration: '8.5s',
+      animationDelay: '1.3s'
+    }
   ];
   
-  // Generate random rotation for polaroids
-  const getRandomRotation = () => {
-    return Math.floor(Math.random() * 16) - 8; // Between -8 and 8 degrees
-  };
-  
-  // Toggle polaroid active state
-  const togglePolaroid = (index) => {
-    if (activePolaroid === index) {
-      setActivePolaroid(null);
+  // Toggle image enlarge on click
+  const toggleImageView = (index, type) => {
+    if (activeImage && activeImage.index === index && activeImage.type === type) {
+      setActiveImage(null);
     } else {
-      setActivePolaroid(index);
+      setActiveImage({ index, type });
     }
   };
   
@@ -485,56 +499,113 @@ const About = () => {
         
         <SectionDivider />
         
-        <FashionGrid className="fashion-grid">
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <p style={{ fontSize: '1.2rem', color: '#c0c0c0', maxWidth: '800px', margin: '0 auto' }}>
+            I'm particularly drawn to urban streetwear and minimalist aesthetics, finding inspiration in the fusion of comfort and bold expression.
+          </p>
+        </div>
+        
+        <ItemsGrid className="fashion-grid">
           {fashionImages.map((item, boxIndex) => (
-            <FashionBox 
+            <ItemBox 
               key={boxIndex} 
               className="fashion-box"
+              ref={el => { if (el) fashionBoxesRef.current[boxIndex] = el; }}
               height={item.height}
               mobileHeight={item.mobileHeight}
               minFloat={item.minFloat}
               maxFloat={item.maxFloat}
               animationDuration={item.animationDuration}
               animationDelay={item.animationDelay}
+              onClick={() => toggleImageView(boxIndex, 'fashion')}
+              style={{ cursor: 'pointer' }}
             >
-              {item.images.map((image, imageIndex) => (
-                <SlideImage
-                  key={imageIndex}
-                  className={`slide-image ${imageIndex === 0 ? 'active' : ''}`}
-                  style={{ backgroundImage: `url(/images/${image})` }}
-                />
-              ))}
-            </FashionBox>
+              <SlidingImages 
+                images={item.images} 
+                boxIndex={boxIndex} 
+                imageType="fashion" 
+              />
+            </ItemBox>
           ))}
-        </FashionGrid>
+        </ItemsGrid>
         
         <SectionDivider />
         
-        <GallerySection>
-          <GalleryTitle>Organic Home Decor & Unique Appliances</GalleryTitle>
-          
-          <PolaroidGallery>
-            {galleryImages.map((image, index) => (
-              <Polaroid 
-                key={index}
-                rotation={getRandomRotation()}
-                onClick={() => togglePolaroid(index)}
-                className={activePolaroid === index ? 'active' : ''}
-              >
-                <PolaroidImage src={image.src} />
-                <PolaroidCaption>{image.caption}</PolaroidCaption>
-              </Polaroid>
-            ))}
-          </PolaroidGallery>
-          
-          {/* Overlay when a polaroid is active */}
-          <PolaroidOverlay 
-            className="overlay"
-            visible={activePolaroid !== null} 
-            onClick={() => setActivePolaroid(null)}
-          />
-        </GallerySection>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <p style={{ fontSize: '1.2rem', color: '#c0c0c0', maxWidth: '800px', margin: '0 auto' }}>
+            Beyond fashion, I enjoy discovering unique home decor pieces and functional appliances that blend artistry with practicality. These items represent the aesthetic style I'm drawn to.
+          </p>
+        </div>
+        
+        <ItemsGrid className="decor-grid">
+          {decorImages.map((item, boxIndex) => (
+            <ItemBox 
+              key={boxIndex} 
+              className="decor-box"
+              ref={el => { if (el) decorBoxesRef.current[boxIndex] = el; }}
+              height={item.height}
+              mobileHeight={item.mobileHeight}
+              minFloat={item.minFloat}
+              maxFloat={item.maxFloat}
+              animationDuration={item.animationDuration}
+              animationDelay={item.animationDelay}
+              onClick={() => toggleImageView(boxIndex, 'decor')}
+              style={{ cursor: 'pointer' }}
+            >
+              <SlidingImages 
+                images={item.images} 
+                boxIndex={boxIndex} 
+                imageType="decor" 
+              />
+            </ItemBox>
+          ))}
+        </ItemsGrid>
       </Container>
+      
+      {/* Overlay for enlarged images */}
+      <ImageOverlay 
+        className="overlay"
+        visible={activeImage !== null} 
+        onClick={() => setActiveImage(null)}
+      >
+        {activeImage && (
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '80%',
+            maxWidth: '800px',
+            maxHeight: '80vh',
+            background: '#111',
+            borderRadius: '10px',
+            overflow: 'hidden',
+            boxShadow: '0 0 30px rgba(0,0,0,0.8)'
+          }}>
+            <div style={{
+              width: '100%',
+              height: '0',
+              paddingBottom: '75%',
+              position: 'relative'
+            }}>
+              <img 
+                src={`/images/${activeImage.type === 'fashion' 
+                  ? fashionImages[activeImage.index].images[0] 
+                  : decorImages[activeImage.index].images[0]}`} 
+                alt="Enlarged view"
+                style={{
+                  position: 'absolute',
+                  top: '0',
+                  left: '0',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </ImageOverlay>
     </AboutSection>
   );
 };
