@@ -243,8 +243,8 @@ const DropdownItem = styled(Link)`
   transition: all 0.2s ease;
   
   &:hover {
-    background: rgba(212, 175, 55, 0.3);
-    color: #d4af37;
+    background: ${props => props.hovercolor ? `${props.hovercolor}33` : 'rgba(212, 175, 55, 0.3)'};
+    color: ${props => props.hovercolor || '#d4af37'};
   }
 `;
 
@@ -256,8 +256,8 @@ const ExternalDropdownItem = styled.a`
   transition: all 0.2s ease;
   
   &:hover {
-    background: rgba(212, 175, 55, 0.3);
-    color: #d4af37;
+    background: ${props => props.hovercolor ? `${props.hovercolor}33` : 'rgba(212, 175, 55, 0.3)'};
+    color: ${props => props.hovercolor || '#d4af37'};
   }
 `;
 
@@ -297,6 +297,8 @@ const Earth = ({ setHoveredSection }) => {
   // Navigation points positioned at specific cities with precise coordinates
   // Atlanta: 33.7490° N, 84.3880° W
   // Nairobi: 1.2921° S, 36.8219° E
+  // Sydney: 33.8688° S, 151.2093° E
+  // London: 51.5074° N, 0.1278° W
   // Tokyo: 35.6762° N, 139.6503° E
   // Rio de Janeiro: 22.9068° S, 43.1729° W (GitHub)
   // Singapore: 1.3521° N, 103.8198° E (LinkedIn)
@@ -318,11 +320,27 @@ const Earth = ({ setHoveredSection }) => {
       type: 'internal'
     },
     { 
+      section: 'goals', 
+      label: 'Goals', 
+      position: latLongToVector3(-33.8688, 151.2093, 1.5),  // Sydney
+      rotation: [0, 0, 0],
+      color: "#00e676",
+      type: 'internal'
+    },
+    { 
+      section: 'resume', 
+      label: 'Resume', 
+      position: latLongToVector3(51.5074, -0.1278, 1.5),  // London
+      rotation: [0, 0, 0],
+      color: "#00e676",
+      type: 'internal'
+    },
+    { 
       section: 'contact', 
       label: 'Contact', 
       position: latLongToVector3(35.6762, 139.6503, 1.5),  // Tokyo
       rotation: [0, 0, 0],
-      color: "#d4af37",
+      color: "#ff6b6b",  // Soft red color
       type: 'internal'
     },
     { 
@@ -603,12 +621,13 @@ const Navigation = () => {
           </svg>
         </DropdownButton>
         <DropdownContent isOpen={dropdownOpen}>
-          <DropdownItem to="/">Home</DropdownItem>
-          <DropdownItem to="/about">About</DropdownItem>
-          <DropdownItem to="/projects">Projects</DropdownItem>
-          <DropdownItem to="/contact">Contact</DropdownItem>
-          <ExternalDropdownItem href="https://github.com/Lactoseandtolerance" target="_blank" rel="noopener noreferrer">GitHub</ExternalDropdownItem>
-          <ExternalDropdownItem href="https://www.linkedin.com/in/angel-nivar-a00740275/" target="_blank" rel="noopener noreferrer">LinkedIn</ExternalDropdownItem>
+          <DropdownItem to="/about" hovercolor="#d4af37">About</DropdownItem>
+          <DropdownItem to="/projects" hovercolor="#d4af37">Projects</DropdownItem>
+          <DropdownItem to="/goals" hovercolor="#00e676">Goals</DropdownItem>
+          <DropdownItem to="/resume" hovercolor="#00e676">Resume</DropdownItem>
+          <DropdownItem to="/contact" hovercolor="#ff6b6b">Contact</DropdownItem>
+          <ExternalDropdownItem href="https://github.com/Lactoseandtolerance" target="_blank" rel="noopener noreferrer" hovercolor="#2464eb">GitHub</ExternalDropdownItem>
+          <ExternalDropdownItem href="https://www.linkedin.com/in/angel-nivar-a00740275/" target="_blank" rel="noopener noreferrer" hovercolor="#0077b5">LinkedIn</ExternalDropdownItem>
         </DropdownContent>
       </SimpleNavDropdown>
       

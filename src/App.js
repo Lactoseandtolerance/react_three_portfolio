@@ -8,6 +8,8 @@ import SimpleNav from './components/SimpleNav';
 import Hero from './components/Hero';
 import About from './components/About';
 import Projects from './components/Projects';
+import Goals from './components/Goals';
+import Resume from './components/Resume';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import StarBackground from './components/StarBackground'; // Import the new CSS-based star background
@@ -86,6 +88,8 @@ function App() {
       <Routes>
         <Route path="/about" element={<SimpleNav />} />
         <Route path="/projects" element={<SimpleNav />} />
+        <Route path="/goals" element={<SimpleNav />} />
+        <Route path="/resume" element={<SimpleNav />} />
         <Route path="/contact" element={<SimpleNav />} />
       </Routes>
       
@@ -94,6 +98,8 @@ function App() {
           <Route path="/" element={<Hero />} />
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<Projects />} />
+          <Route path="/goals" element={<Goals />} />
+          <Route path="/resume" element={<Resume />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
