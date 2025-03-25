@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
-import { OrbitControls, Sphere, Stars, Html, Cloud } from '@react-three/drei';
+import { OrbitControls, Sphere, Stars, Html } from '@react-three/drei';
 import { useNavigate, Link } from 'react-router-dom';
 import * as THREE from 'three';
 import styled from 'styled-components';
@@ -463,18 +463,18 @@ const Earth = ({ setHoveredSection }) => {
         speed={0} /* Turned off animation */
       />
       
-      {/* Removed nebulae effects that were creating large blue circles */}
-      
-      {/* Subtle cosmic dust effect - reduced size and opacity */}
-      <Cloud
-        position={[-30, -10, -50]}
-        opacity={0.07}
-        speed={0.05}
-        width={20}
-        depth={5}
-        segments={10}
-        color="#ffaa44"
-      />
+      {/* Custom cosmic dust effect - replacing the Cloud component that was causing errors */}
+      {/* Creating a custom particle system to simulate cosmic dust */}
+      <mesh position={[-30, -10, -50]}>
+        <sphereGeometry args={[15, 32, 32]} />
+        <meshBasicMaterial 
+          color="#ffaa44" 
+          transparent={true} 
+          opacity={0.07} 
+          depthWrite={false}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
       
       {/* Earth sphere with realistic textures */}
       <group ref={globeRef}>

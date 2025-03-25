@@ -331,13 +331,6 @@ const Projects = () => {
       tech: ["AWS", "Python", "Machine Learning", "Time Series Analysis", "API Integration", "Flask"],
       media: { type: "image", src: "/images/wip.png" },
       links: [{ text: "Live Demo", url: "https://yourdomain.com/solarcast-demo" }, { text: "GitHub", url: "https://github.com/Lactoseandtolerance/solar_forecast_azure" }]
-    },
-    {
-      title: "E-comm Storefront for 'Masonry company'",
-      description: "Masonry Company hired me as lead web developer for Creation and Maintenance of their official online service site.",
-      tech: ["React", "Javascript", "CSS", "HTML", "XML", "Typescript"],
-      media: { type: "image", src: "/images/wip.png" },
-      links: [{ text:"", url: "https://yourdomain.com/solarcast-demo" }, { text: "GitHub", url: "https://github.com/Lactoseandtolerance/masonry_website_react" }]
     }
   ];
   

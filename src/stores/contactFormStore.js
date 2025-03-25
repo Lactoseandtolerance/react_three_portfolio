@@ -24,7 +24,7 @@ export const useContactFormStore = create(
       updateField: (field, value) => set((state) => ({
         formData: { ...state.formData, [field]: value },
         isDirty: true,
-        lastSaved: new Date().toISOString() // Update the last saved timestamp
+        lastSaved: new Date().toISOString()
       })),
       
       saveForm: () => {
@@ -73,9 +73,8 @@ export const useContactFormStore = create(
       })
     }),
     {
-      name: 'contact-form-storage', // Name for the localStorage key
+      name: 'contact-form-storage',
       storage: createJSONStorage(() => localStorage),
-      // Optionally select which parts of the state to persist
       partialize: (state) => ({
         formData: state.formData,
         isDirty: state.isDirty,
