@@ -330,7 +330,14 @@ const Projects = () => {
       description: "Climate change has me thinking a lot about renewable energy, so I developed this cloud-based forecasting system for solar power generation! The problem is pretty interesting – solar energy is great, but it's unpredictable because of weather changes. I built a machine learning model that uses weather data to predict how much power solar plants will generate in the coming hours and days. The system pulls data from NASA and weather APIs, stores everything in AWS, and runs predictions automatically. What makes this project special is how it helps grid operators balance energy distribution more efficiently, reducing waste and costs. I'm particularly proud of getting the prediction accuracy within 10% of actual values – which might not sound impressive until you realize how chaotic weather patterns can be!",
       tech: ["AWS", "Python", "Machine Learning", "Time Series Analysis", "API Integration", "Flask"],
       media: { type: "image", src: "/images/wip.png" },
-      links: [{ text: "Live Demo", url: "https://yourdomain.com/solarcast-demo" }, { text: "Documentation", url: "https://github.com/yourusername/solarcast/docs" }]
+      links: [{ text: "Live Demo", url: "https://yourdomain.com/solarcast-demo" }, { text: "GitHub", url: "https://github.com/Lactoseandtolerance/solar_forecast_azure" }]
+    },
+    {
+      title: "E-comm Storefront for 'Masonry company'",
+      description: "Masonry Company hired me as lead web developer for Creation and Maintenance of their official online service site.",
+      tech: ["React", "Javascript", "CSS", "HTML", "XML", "Typescript"],
+      media: { type: "image", src: "/images/wip.png" },
+      links: [{ text:"", url: "https://yourdomain.com/solarcast-demo" }, { text: "GitHub", url: "https://github.com/Lactoseandtolerance/masonry_website_react" }]
     }
   ];
   
