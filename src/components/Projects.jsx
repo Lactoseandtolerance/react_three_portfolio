@@ -374,7 +374,7 @@ const Projects = () => {
                   {project.tech.length > 4 && <span>+{project.tech.length - 4} more</span>}
                 </TechUsed>
                 
-                <ProjectLinks>
+                <ProjectLinks> 
                   <a 
                     onClick={(e) => {
                       e.stopPropagation();

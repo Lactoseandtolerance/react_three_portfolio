@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from 'styled-components';
 
-// Import components
 import Navigation from './components/Navigation';
 import SimpleNav from './components/SimpleNav';
 import Hero from './components/Hero';
@@ -12,9 +11,8 @@ import Goals from './components/Goals';
 import Resume from './components/Resume';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import StarBackground from './components/StarBackground'; // Import the new CSS-based star background
+import StarBackground from './components/StarBackground'; 
 
-// Global styles
 const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
@@ -54,21 +52,20 @@ function App() {
     const handleRouteChange = () => {
       const path = window.location.pathname;
       if (path === '/') {
-        document.body.style.overflow = 'hidden'; // Prevent scrolling on home page
+        document.body.style.overflow = 'hidden';
       } else {
-        document.body.style.overflow = 'auto'; // Enable scrolling on other pages
+        document.body.style.overflow = 'auto';
       }
     };
     
     // Initial check
     handleRouteChange();
     
-    // Listen for popstate event (browser back/forward navigation)
     window.addEventListener('popstate', handleRouteChange);
     
     return () => {
       window.removeEventListener('popstate', handleRouteChange);
-      document.body.style.overflow = 'auto'; // Reset on unmount
+      document.body.style.overflow = 'auto'; 
     };
   }, []);
   
@@ -76,15 +73,15 @@ function App() {
     <Router>
       <GlobalStyle />
       
-      {/* Add the star background to all pages */}
+      {/* Star Background */}
       <StarBackground />
       
-      {/* Show 3D navigation only on the home page */}
+      {/*3D nav*/}
       <Routes>
         <Route path="/" element={<Navigation />} />
       </Routes>
       
-      {/* Show simple nav on all pages except home */}
+      {/*simple nav*/}
       <Routes>
         <Route path="/about" element={<SimpleNav />} />
         <Route path="/projects" element={<SimpleNav />} />
