@@ -137,6 +137,67 @@ const SkillBubble = styled.div`
   }
 `;
 
+const EducationCard = styled.div`
+  background: linear-gradient(135deg, rgba(17, 17, 17, 0.9) 0%, rgba(27, 27, 27, 0.8) 100%);
+  border: 2px solid #d4af37;
+  border-radius: 12px;
+  padding: 2.5rem;
+  margin-top: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+    
+    &:before {
+      left: 100%;
+    }
+  }
+`;
+
+const EducationTitle = styled.h3`
+  font-size: 1.6rem;
+  color: #d4af37;
+  margin: 0 0 0.8rem 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const EducationSchool = styled.p`
+  font-size: 1.1rem;
+  color: #ffd700;
+  margin: 0.5rem 0;
+  font-weight: 600;
+`;
+
+const EducationDegree = styled.p`
+  font-size: 1rem;
+  color: #d4d4d4;
+  margin: 0.3rem 0;
+  line-height: 1.5;
+`;
+
+const EducationDate = styled.p`
+  font-size: 0.95rem;
+  color: #a0a0a0;
+  margin-top: 1rem;
+  font-style: italic;
+`;
+
 const SectionDivider = styled.div`
   margin: 5rem 0;
   height: 1px;
@@ -265,7 +326,7 @@ const About = () => {
     { name: 'HTML', category: 'Web' },
     { name: 'CSS', category: 'Web' },
     { name: 'SQL', category: 'Data' },
-    { name: 'React.js', category: 'Web' },
+    { name: 'React', category: 'Web' },
     { name: 'Three.js', category: 'Graphics' },
     { name: 'Data Visualization', category: 'Data' },
     { name: 'Machine Learning', category: 'AI' },
@@ -495,6 +556,16 @@ const About = () => {
               ))}
             </SkillsGrid>
           </SkillsContainer>
+          
+          <EducationCard>
+            <EducationTitle>
+              <span>🎓</span>
+              Education
+            </EducationTitle>
+            <EducationSchool>Georgia State University</EducationSchool>
+            <EducationDegree>Bachelor of Science in Data Science</EducationDegree>
+            <EducationDate>Graduated: Fall 2025</EducationDate>
+          </EducationCard>
         </AboutContent>
         
         <SectionDivider />

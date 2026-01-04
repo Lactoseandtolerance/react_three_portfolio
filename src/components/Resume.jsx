@@ -127,7 +127,7 @@ const Resume = () => {
   const [debugMode, setDebugMode] = useState(false);
   
   // Path to your resume PDF
-  const resumePath = process.env.PUBLIC_URL + "Pro-Resume - Angel Nivar .pdf";
+  const resumePath = process.env.PUBLIC_URL + "Angel_Nivar_Resume_Sep 2025.pdf";
   
   const handleLoadError = () => {
     setIsLoading(false);

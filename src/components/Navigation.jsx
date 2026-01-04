@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber';
+import React, { useState, useRef, useEffect } from 'react';
+import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Sphere, Stars, Html } from '@react-three/drei';
 import { useNavigate, Link } from 'react-router-dom';
 import * as THREE from 'three';

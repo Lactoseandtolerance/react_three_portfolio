@@ -9,26 +9,40 @@ const NavContainer = styled.nav`
   z-index: 100;
 `;
 
-const DropdownButton = styled.button`
-  background: rgba(27, 27, 27, 0.8);
-  color: #d4af37;
-  padding: 10px 15px;
-  border-radius: 5px;
-  border: 1px solid rgba(212, 175, 55, 0.5);
-  backdrop-filter: blur(10px);
+const HamburgerButton = styled.button`
+  background: transparent;
+  border: none;
   cursor: pointer;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 5px;
+  padding: 0;
   transition: all 0.3s ease;
   
-  &:hover {
-    background: rgba(212, 175, 55, 0.3);
+  span {
+    width: 25px;
+    height: 3px;
+    background: #d4af37;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    display: block;
   }
   
-  svg {
-    transition: transform 0.3s ease;
-    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  ${props => props.isOpen && `
+    span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    span:nth-child(2) {
+      opacity: 0;
+    }
+    span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+  `}
+  
+  &:hover span {
+    background: #ffd700;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
   }
 `;
 
@@ -83,15 +97,14 @@ const SimpleNav = () => {
   
   return (
     <NavContainer>
-      <DropdownButton 
+      <HamburgerButton 
         isOpen={dropdownOpen}
         onClick={() => setDropdownOpen(!dropdownOpen)}
       >
-        Menu
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
-        </svg>
-      </DropdownButton>
+        <span></span>
+        <span></span>
+        <span></span>
+      </HamburgerButton>
       
       <DropdownContent isOpen={dropdownOpen}>
         <DropdownItem to="/" hovercolor="#d4af37">Home</DropdownItem>

@@ -1,0 +1,12 @@
+** node ./node_modules/react-scripts/bin/react-scripts.js start
+
+goals component
+- all of those goals are defunct, create blank page until further notice
+
+resume
+- not up to date
+- can replace docx file?
+
+About
+- Need to add skill cards according to new resume
+- need to highlight academics. [graduated from Georgia state universty fall 2025 with bachelors of science, data science]
