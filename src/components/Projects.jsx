@@ -287,14 +287,14 @@ const Projects = () => {
       title: "What's Da Moov",
       description: "Ever been bored on a weekend with no idea what's going on nearby? That's why I built What's Da Moov! It's an app that helps you discover local events tailored just for you. I created a recommendation system that learns what you like and suggests events you'll actually want to attend. The app uses your location to find what's happening around you right now, and I made sure the interface is super easy to use with filters that help you find exactly what you're looking for. It was a fun challenge to build a backend that updates in real-time while keeping everyone's data secure.",
       tech: ["SQL", "Database Design", "HTML", "Python", "Flask"],
-      media: { type: "video", src: "/assets/Whats_Da_Moov.mp4" },
+      media: { type: "video", src: "/assets/Whats_Da_Moov.mp4", poster: "/assets/Whats_Da_Moov.poster.jpg" },
       links: [{ text: "GitHub", url: "https://github.com/Lactoseandtolerance/What-s-Da-Moov" }]
     },
     {
       title: "Video Surveillance Technique Enhancement",
       description: "This project was my deep dive into computer vision! I wanted to see if I could make surveillance cameras smarter at detecting and tracking objects in real-time. I played around with some really cool techniques like shape context descriptors (which help computers recognize objects from their outlines) and adaptive background mixtures (which help separate moving objects from the background). The most satisfying part was seeing the system successfully track people and objects even when the lighting changed or things got partially hidden. It's like teaching a computer to see the way we do - definitely challenging but incredibly rewarding when it works!",
       tech: ["Python", "OpenCV", "Machine Learning", "Data Processing"],
-      media: { type: "video", src: "/assets/Video_Surveillance_Output.mp4" },
+      media: { type: "video", src: "/assets/Video_Surveillance_Output.mp4", poster: "/assets/Video_Surveillance_Output.poster.jpg" },
       links: [{ text: "GitHub", url: "https://github.com/Lactoseandtolerance/Video-Surveilance-Technique" }]
     },
     {
@@ -356,7 +356,19 @@ const Projects = () => {
             <ProjectCard key={index} onClick={() => openProjectDetails(project)}>
               <ProjectMedia>
                 {project.media.type === 'video' ? (
-                  <video src={project.media.src} autoPlay muted loop />
+                  <video
+                    src={project.media.src}
+                    poster={project.media.poster}
+                    muted
+                    loop
+                    playsInline
+                    preload="none"
+                    onMouseEnter={(e) => e.currentTarget.play().catch(() => {})}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.pause();
+                      e.currentTarget.currentTime = 0;
+                    }}
+                  />
                 ) : (
                   <img src={project.media.src} alt={project.title} />
                 )}
@@ -402,7 +414,7 @@ const Projects = () => {
                 <ModalBody>
                   <div className="modal-media">
                     {selectedProject.media.type === 'video' ? (
-                      <video src={selectedProject.media.src} controls autoPlay muted />
+                      <video src={selectedProject.media.src} poster={selectedProject.media.poster} controls autoPlay muted playsInline />
                     ) : (
                       <img src={selectedProject.media.src} alt={selectedProject.title} />
                     )}
