@@ -18,6 +18,11 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci && npm run build
+        env:
+          # react-scripts promotes lint warnings to errors when CI=true, which
+          # GitHub Actions sets by default. The repo has pre-existing warnings;
+          # they still print, but must not fail the deploy.
+          CI: false
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
