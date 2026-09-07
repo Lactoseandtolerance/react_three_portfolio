@@ -145,9 +145,14 @@ const ProjectLinks = styled.div`
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   
-  a {
+  a,
+  button {
     display: inline-block;
     margin-right: 1rem;
+    font-family: inherit;
+    font-size: inherit;
+    background: none;
+    cursor: pointer;
     color: #d4af37;
     font-weight: bold;
     text-decoration: none;
@@ -156,7 +161,8 @@ const ProjectLinks = styled.div`
     border-radius: 5px;
     transition: all 0.3s ease;
     
-    &:hover {
+    &:hover,
+    &:focus-visible {
       background: #d4af37;
       color: #000;
     }
@@ -386,15 +392,16 @@ const Projects = () => {
                   {project.tech.length > 4 && <span>+{project.tech.length - 4} more</span>}
                 </TechUsed>
                 
-                <ProjectLinks> 
-                  <a 
+                <ProjectLinks>
+                  <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       openProjectDetails(project);
                     }}
                   >
                     View Details
-                  </a>
+                  </button>
                 </ProjectLinks>
               </ProjectInfo>
             </ProjectCard>
